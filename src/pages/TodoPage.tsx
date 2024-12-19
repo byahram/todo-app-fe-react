@@ -34,6 +34,30 @@ const todos: Todo[] = [
     category: "Health",
     status: "done",
   },
+  {
+    id: 4,
+    title: "Complete project",
+    description: "Finish the React project for the client.",
+    dueDate: "2024-12-20",
+    category: "Work",
+    status: "open",
+  },
+  {
+    id: 5,
+    title: "Complete project",
+    description: "Finish the React project for the client.",
+    dueDate: "2024-12-20",
+    category: "Work",
+    status: "open",
+  },
+  {
+    id: 6,
+    title: "Complete project",
+    description: "Finish the React project for the client.",
+    dueDate: "2024-12-20",
+    category: "Work",
+    status: "open",
+  },
 ];
 
 export const TodoPage = () => {
@@ -44,57 +68,67 @@ export const TodoPage = () => {
   const filteredTodos = todos.filter((todo) => todo.status === selectedStatus);
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Todo List</h1>
-
-      <div className="flex justify-around mb-6">
-        {(["open", "in progress", "done"] as const).map((status) => (
-          <button
-            key={status}
-            onClick={() => setSelectedStatus(status)}
-            className={`px-4 py-2 rounded-lg font-semibold transition ${
-              selectedStatus === status
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            {status.replace(/\b\w/g, (char) => char.toUpperCase())}
-          </button>
-        ))}
-      </div>
-
-      <ul className="space-y-4">
-        {filteredTodos.map((todo) => (
-          <li
-            key={todo.id}
-            className="bg-white p-4 rounded-lg shadow-md flex justify-between items-start"
-          >
-            <div>
-              <h3 className="text-lg font-bold">{todo.title}</h3>
-              <p className="text-gray-700 mb-1">{todo.description}</p>
-              <p className="text-sm text-gray-500">Due: {todo.dueDate}</p>
-              <p className="text-sm text-gray-500">Category: {todo.category}</p>
-              <p
-                className={`text-sm font-semibold mt-2 ${
-                  todo.status === "done"
-                    ? "text-green-500"
-                    : todo.status === "in progress"
-                    ? "text-yellow-500"
-                    : "text-blue-500"
+    <>
+      <div className="flex flex-col h-[calc(100vh-8rem)] md:h-[calc(100vh-10rem)]">
+        <div className="overflow-y-auto flex-grow px-10 py-4 max-w-full w-full mx-auto scrollbar-hide">
+          <div className="flex justify-around mb-6">
+            {(["open", "in progress", "done"] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setSelectedStatus(status)}
+                className={`px-4 py-2 font-semibold transition ease-in-out ${
+                  selectedStatus === status
+                    ? "border-b-cyan-800 border-b-4"
+                    : ""
                 }`}
               >
-                Status: {todo.status}
-              </p>
-            </div>
-          </li>
-        ))}
-      </ul>
+                {status.replace(/\b\w/g, (char) => char.toUpperCase())}
+              </button>
+            ))}
+          </div>
+
+          <ul className="space-y-4">
+            {filteredTodos.map((todo) => (
+              <li
+                key={todo.id}
+                className="bg-white p-4 rounded-lg shadow-md flex justify-between items-start border-2 border-black"
+              >
+                <div>
+                  <h3 className="text-lg font-bold">{todo.title}</h3>
+                  <p className="text-gray-700 mb-1">{todo.description}</p>
+                  <p className="text-sm text-gray-500">Due: {todo.dueDate}</p>
+                  <p className="text-sm text-gray-500">
+                    Category: {todo.category}
+                  </p>
+                  <p
+                    className={`text-sm font-semibold mt-2 ${
+                      todo.status === "done"
+                        ? "text-green-500"
+                        : todo.status === "in progress"
+                        ? "text-yellow-500"
+                        : "text-blue-500"
+                    }`}
+                  >
+                    Status: {todo.status}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          {filteredTodos.length === 0 && (
+            <p className="text-center text-gray-500 mt-4">
+              No todos with the selected status.
+            </p>
+          )}
+        </div>
+      </div>
 
       {filteredTodos.length === 0 && (
         <p className="text-center text-gray-500 mt-4">
           No todos with the selected status.
         </p>
       )}
-    </div>
+    </>
   );
 };

@@ -8,7 +8,7 @@ function BotAddButton() {
   };
 
   return (
-    <div>
+    <>
       {/* Dimmed Background when Popup is Open */}
       {isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-30"></div>
@@ -16,7 +16,7 @@ function BotAddButton() {
 
       {/* Fixed Navigation Bar */}
       <nav className="absolute bottom-0 left-0 right-0 bg-gray-50 border-t border-gray-200 rounded-b-2xl z-20">
-        <div className="flex justify-center items-center px-4 py-3">
+        <div className="flex justify-center items-center px-4 h-16">
           {/* Add Button or Close Button */}
           <button
             onClick={togglePopup}
@@ -42,12 +42,12 @@ function BotAddButton() {
 
       {/* Popup */}
       {isPopupOpen && (
-        <div className="absolute bottom-1 left-1 right-1 bg-white shadow-2xl rounded-2xl transform transition-all z-40 border-2 border-black">
+        <div className="absolute bottom-2 left-2 right-2 bg-white shadow-2xl rounded-2xl transform transition-all z-40 border-2 border-black">
           <div className="relative">
             {/* Close Button */}
             <button
               onClick={togglePopup}
-              className="absolute -top-7 right-1/2 translate-x-1/2 w-14 h-14 bg-black text-white rounded-full flex items-center justify-center border-2 border-black"
+              className="absolute -top-6 right-1/2 translate-x-1/2 w-12 h-12 bg-black text-white rounded-full flex items-center justify-center border-2 border-black"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -110,18 +110,20 @@ function BotAddButton() {
                     <option value="others">Others</option>
                   </select>
                 </div>
-                <button
-                  type="submit"
-                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-                >
-                  Add Todo
-                </button>
+                <div className="flex items-center justify-end w-full">
+                  <button
+                    type="submit"
+                    className="w-max bg-white text-black py-1 px-4 rounded-lg border-2 font-semibold border-black hover:bg-black hover:text-white"
+                  >
+                    Add Todo
+                  </button>
+                </div>
               </form>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

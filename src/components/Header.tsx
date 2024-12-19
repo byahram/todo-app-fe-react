@@ -1,6 +1,6 @@
 function Header() {
   return (
-    <header className="flex items-center justify-between px-8 py-4 bg-white rounded-t-2xl border-b-2 border-black">
+    <header className="flex items-center justify-between px-8 h-16 bg-white rounded-t-2xl border-b-2 border-black">
       {/* Hamburger Menu */}
       <div className="hamburger flex items-center">
         <button className="flex flex-col justify-center space-y-1">

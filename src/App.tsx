@@ -12,7 +12,7 @@ function App() {
   const showBottom = ["/"].includes(location.pathname);
 
   return (
-    <div className="App mx-auto my-0 bg-white max-w-full min-h-screen shadow-none rounded-none md:my-4 md:relative md:max-w-[600px] md:min-h-[calc(100vh-2rem)] md:rounded-2xl md:shadow-2xl">
+    <div className="App overflow-y-hidden mx-auto my-0 bg-white max-w-full w-full min-h-screen shadow-none rounded-none md:h-[calc(100vh - 4rem)] md:my-4 md:relative md:max-w-[600px] md:min-h-[calc(100vh-2rem)] md:rounded-2xl md:shadow-2xl">
       {showHeader && <Header />}
 
       <Routes>
