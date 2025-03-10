@@ -1,10 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { useTodoStore } from "../utils/zustand";
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const setCurrentUser = useTodoStore((state) => state.setCurrentUser);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,7 +19,15 @@ export default function LoginPage() {
 
     try {
       const response = await api.post("/users/login", { email, password });
-      console.log("response ::: ", response);
+      if (response.status === 200) {
+        setCurrentUser(response.data.user);
+        sessionStorage.setItem("token", response.data.token);
+        api.defaults.headers["authorization"] = `Bearer ${response.data.token}`;
+
+        setError("");
+        navigate("/");
+      }
+      setError(response?.data?.message);
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "An unexpected error occurred"

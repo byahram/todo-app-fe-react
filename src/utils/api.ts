@@ -4,7 +4,6 @@ const api = axios.create({
   baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
   headers: {
     "Content-Type": "application/json",
-    // authorization: `Bearer ${sessionStorage.getItem("token")}`,
   },
 });
 
@@ -13,17 +12,22 @@ const api = axios.create({
  */
 api.interceptors.request.use(
   (request) => {
-    console.log(
-      "[API Request] ",
-      request.method?.toUpperCase(),
-      request.url,
-      request
-    );
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      request.headers.authorization = `Bearer ${token}`;
+    }
+
+    console.log("[API Request] ", request.method?.toUpperCase(), request.url);
     return request;
   },
   (error) => {
-    console.error("[API Request Error] ", error);
-    return Promise.reject(error);
+    console.error(
+      "[API Request Error] ",
+      error.response?.status || "No Status",
+      error.response?.config?.url || "No URL",
+      error.response?.data || "No Data"
+    );
+    return Promise.reject(new Error(error));
   }
 );
 
@@ -43,11 +47,12 @@ api.interceptors.response.use(
   (error) => {
     console.error(
       "[API Response Error] ",
-      error.response?.status,
-      error.response?.config?.url,
-      error.response?.data
+      error.response?.status || "No Status",
+      error.response?.config?.url || "No URL",
+      error.response?.data || "No Data"
     );
-    return Promise.reject(error);
+    return error.response;
+    // return Promise.reject(new Error(error));
   }
 );
 

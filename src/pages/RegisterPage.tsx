@@ -25,16 +25,17 @@ export default function RegisterPage() {
     return emailRegex.test(email);
   };
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setEmail(value);
-    setEmailError(validateEmail(value) ? "" : "Invalid email format.");
-  };
-
   const validatePassword = (password: string) => {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return passwordRegex.test(password);
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setEmail(value);
+    setEmailError(validateEmail(value) ? "" : "Invalid email format.");
+    setError("");
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +46,7 @@ export default function RegisterPage() {
         ? ""
         : "Password must be at least 8 characters long and include lowercase, uppercase, number, and special character."
     );
+    setError("");
   };
 
   const handleChkPasswordChange = (
@@ -53,16 +55,32 @@ export default function RegisterPage() {
     const value = event.target.value;
     setChkPassword(value);
     setChkPasswordError(value === password ? "" : "Passwords do not match.");
+    setError("");
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     try {
+      // 이메일 유효성 검사
+      if (!validateEmail(email)) {
+        setError("Please check the email format!");
+        setLoading(false);
+        return;
+      }
+
+      // 비밀번호 확인 검사
+      if (password !== chkPassword) {
+        setError("Passwords do not match. Please try again!");
+        setLoading(false);
+        return;
+      }
+
       const response = await api.post("/users", { name, email, password });
       console.log("response :: ", response);
       if (response.status === 200) {
-        navigate("/");
+        alert(response?.data?.message || "");
+        navigate("/login");
       }
     } catch (error) {
       setError(
