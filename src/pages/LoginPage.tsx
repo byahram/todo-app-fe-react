@@ -1,13 +1,15 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useTodoStore } from "../utils/zustand";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const currentUser = useTodoStore((state) => state.currentUser);
   const setCurrentUser = useTodoStore((state) => state.setCurrentUser);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,6 +38,10 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (currentUser) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <LoginPageContainer>

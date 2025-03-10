@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import api from "../utils/api";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useTodoStore } from "../utils/zustand";
 
 interface ErrorMessageProps {
   bottom?: boolean;
@@ -10,6 +11,7 @@ interface ErrorMessageProps {
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const currentUser = useTodoStore((state) => state.currentUser);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -77,7 +79,6 @@ export default function RegisterPage() {
       }
 
       const response = await api.post("/users", { name, email, password });
-      console.log("response :: ", response);
       if (response.status === 200) {
         alert(response?.data?.message || "");
         navigate("/login");
@@ -90,6 +91,10 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
+
+  if (currentUser) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <RegisterPageContainer>
