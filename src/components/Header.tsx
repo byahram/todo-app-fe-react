@@ -6,7 +6,6 @@ import { useTodoStore } from "../utils/zustand";
 
 export const Header: React.FC = () => {
   const currentUser = useTodoStore((state) => state.currentUser);
-  console.log("currentUser ::: ", currentUser);
 
   return (
     <HeaderContainer>
@@ -14,7 +13,7 @@ export const Header: React.FC = () => {
         <TitleTxt>{currentUser?.name + `'s Todo`}</TitleTxt>
         <LeftWrap>
           <StyledLink to={currentUser ? "/register" : "/login"}>
-            {currentUser ? "로그아웃" : "로그인"}
+            {currentUser ? "Logout" : "Sign In"}
           </StyledLink>
           <ThemeBtn />
         </LeftWrap>

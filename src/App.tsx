@@ -17,6 +17,7 @@ function App() {
       const token = sessionStorage.getItem("token");
       if (token) {
         const response = await api.get("/users/getUser");
+        console.log("current user ::: ", response);
         setCurrentUser(response.data.user);
       }
     } catch (error) {

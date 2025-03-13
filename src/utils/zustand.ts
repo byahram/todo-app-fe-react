@@ -16,7 +16,7 @@ interface Todo {
   id: number;
   categoryId: number;
   title: string;
-  status: "todo" | "doing" | "done" | "pending";
+  status: "todo" | "doing" | "done";
 }
 
 interface TodoStoreProps {
@@ -25,7 +25,7 @@ interface TodoStoreProps {
   categories: Category[];
   todos: Todo[];
   sort: "new" | "old";
-  filter: "all" | "todo" | "doing" | "done" | "pending";
+  filter: "all" | "todo" | "doing" | "done";
   selectedCategory: Category | null;
   currentUser: User | null;
 
@@ -47,6 +47,9 @@ interface TodoStoreProps {
   updateTodoText: (id: number, newTitle: string) => void;
   updateTodoStatus: (id: number, newStatus: Todo["status"]) => void;
   deleteTodo: (id: number) => void;
+
+  // reset
+  resetStore: () => void;
 }
 
 export const useTodoStore = create<TodoStoreProps>()(
@@ -54,11 +57,11 @@ export const useTodoStore = create<TodoStoreProps>()(
     (set, get) => ({
       isDark: false,
       users: [],
-      categories: [{ id: 1, name: "Category1" }],
+      categories: [],
       todos: [],
       sort: "new",
       filter: "all",
-      selectedCategory: { id: 1, name: "Category1" },
+      selectedCategory: null,
       currentUser: null,
 
       // users
@@ -73,7 +76,10 @@ export const useTodoStore = create<TodoStoreProps>()(
           users: [...state.users, user],
         })),
       setCurrentUser: (user: User | null) => set({ currentUser: user }),
-      logoutUser: () => set({ currentUser: null }),
+      logoutUser: () => {
+        sessionStorage.removeItem("token"); // 로그아웃 시 토큰 제거
+        set({ currentUser: null });
+      },
 
       // categories
       getCategories: () => {
@@ -83,9 +89,13 @@ export const useTodoStore = create<TodoStoreProps>()(
         return get().categories.find((category) => category.id === id);
       },
       addCategory: (newCategory: Category) =>
-        set((state) => ({
-          categories: [...state.categories, newCategory],
-        })),
+        set((state) => {
+          const newCategories = [...state.categories, newCategory];
+          return {
+            categories: newCategories,
+            selectedCategory: newCategories[0],
+          };
+        }),
       updateCategory: (id: number, newName: string) =>
         set((state) => ({
           categories: state.categories.map((cate) =>
@@ -120,6 +130,35 @@ export const useTodoStore = create<TodoStoreProps>()(
         set((state) => ({
           todos: state.todos.filter((todo) => todo.id !== id),
         })),
+
+      // reset
+      resetStore: () => {
+        localStorage.removeItem("react-todoapp");
+        sessionStorage.removeItem("token");
+
+        set({
+          isDark: false,
+          users: [],
+          categories: [],
+          todos: [],
+          sort: "new",
+          filter: "all",
+          selectedCategory: null,
+          currentUser: null,
+        });
+      },
+
+      // initStore
+      initStore: () =>
+        set((state) => {
+          const token = sessionStorage.getItem("token");
+
+          return {
+            selectedCategory:
+              state.categories.length > 0 ? state.categories[0] : null,
+            currentUser: token ? state.currentUser : null,
+          };
+        }),
     }),
     {
       name: "react-todoapp",

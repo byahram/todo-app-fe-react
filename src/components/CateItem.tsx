@@ -22,7 +22,6 @@ export const CateItem: React.FC<CateItemProps> = ({ category }) => {
     deleteCategory,
     setSelectedCategory,
     selectedCategory,
-    categories,
   } = useTodoStore();
   const [newCategoryValue, setNewCategoryValue] = useState(category.name);
   const { showModal, handleShowModal, handleCloseModal } = useModal();
@@ -41,8 +40,9 @@ export const CateItem: React.FC<CateItemProps> = ({ category }) => {
   const handleDelete = () => {
     deleteCategory(category.id);
 
-    if (categories.length > 0) {
-      setSelectedCategory(categories[0]);
+    const updatedCategories = useTodoStore.getState().categories;
+    if (updatedCategories.length > 0) {
+      setSelectedCategory(updatedCategories[0]);
     } else {
       setSelectedCategory(null);
     }
