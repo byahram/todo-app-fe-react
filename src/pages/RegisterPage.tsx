@@ -78,7 +78,11 @@ export default function RegisterPage() {
         return;
       }
 
-      const response = await api.post("/users", { name, email, password });
+      const response = await api.post("/users/register", {
+        name,
+        email,
+        password,
+      });
       if (response.status === 200) {
         alert(response?.data?.message || "");
         navigate("/login");
