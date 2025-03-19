@@ -1,28 +1,37 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useTodoStore } from "../utils/zustand";
 import { FaPlus } from "react-icons/fa";
 import { CateItem } from "./CateItem";
+import api from "../utils/api";
 
 const Category = () => {
+  const [error, setError] = useState("");
   const addCateInputRef = useRef<HTMLInputElement>(null);
   const categories = useTodoStore((state) => state.categories);
-  const addCategory = useTodoStore((state) => state.addCategory);
+  const { addCategory } = useTodoStore();
 
-  const onSubmitAddCate = (e: React.FormEvent) => {
+  const onSubmitAddCate = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const value = addCateInputRef.current?.value;
     if (!value || value === "") return;
 
-    const newCategory = {
-      id: Date.now(),
-      name: value,
-    };
-    addCategory(newCategory);
+    try {
+      const newCategory = { name: value };
+      const response = await api.post("/categories/add", newCategory);
 
-    if (addCateInputRef.current) {
-      addCateInputRef.current.value = "";
+      addCategory(response.data.newCategory);
+
+      if (addCateInputRef.current) {
+        addCateInputRef.current.value = "";
+      }
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? "Error adding categories: " + error.message
+          : "An unexpected error occurred"
+      );
     }
   };
 
@@ -31,11 +40,13 @@ const Category = () => {
       <Title>Category</Title>
 
       {/* Category List */}
-      <List>
-        {categories.map((category) => (
-          <CateItem key={category.id} category={category} />
-        ))}
-      </List>
+      {!error && (
+        <List>
+          {categories.map((category) => (
+            <CateItem key={category.id} category={category} />
+          ))}
+        </List>
+      )}
 
       {/* Add Category */}
       <AddCateForm onSubmit={onSubmitAddCate}>
@@ -52,7 +63,7 @@ export default Category;
 
 const CateWrapper = styled.article`
   width: 23%;
-  height: fit-content;
+  height: calc(100vh - 13rem);
   padding: 1rem;
   background: #f1f3f5;
   border-right: 2px solid #dee2e6;
